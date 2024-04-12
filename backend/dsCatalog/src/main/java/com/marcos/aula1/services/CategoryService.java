@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.marcos.aula1.dto.CategoryDTO;
 import com.marcos.aula1.entities.Category;
 import com.marcos.aula1.repositories.CategoryRepository;
+import com.marcos.aula1.services.exceptions.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -28,7 +29,7 @@ public class CategoryService {
 	@Transactional
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = repository.findById(id);
-		Category entity = obj.get();
+		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Entidade não encontrada!! ") );
 		return new CategoryDTO(entity);
 	}
 	
