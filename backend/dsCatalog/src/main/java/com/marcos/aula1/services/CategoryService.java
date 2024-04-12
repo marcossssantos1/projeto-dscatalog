@@ -5,11 +5,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.marcos.aula1.dto.CategoryDTO;
 import com.marcos.aula1.entities.Category;
 import com.marcos.aula1.repositories.CategoryRepository;
+import com.marcos.aula1.services.exceptions.DataBaseException;
 import com.marcos.aula1.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -45,13 +47,25 @@ public class CategoryService {
 	@Transactional
 	public CategoryDTO update(Long id,CategoryDTO dto) {
 		try {
-			Category entity = repository.getReferenceById(id)
+			Category entity = repository.getReferenceById(id);
 			entity.setName(dto.getName());
 			entity = repository.save(entity);
 			return new CategoryDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("ID not found " + id);
 		}
+	}
+
+	
+	public void delete(Long id) {
+		if(!repository.existsById(id)) {
+			throw new ResourceNotFoundException("Recurso não encontrado");
+		} try {
+			repository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataBaseException("Falha de integridade referencial");
+		}
+		
 	}
 	
 	
