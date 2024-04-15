@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.marcos.aula1.entities.Category;
 import com.marcos.aula1.entities.Product;

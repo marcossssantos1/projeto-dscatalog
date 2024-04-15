@@ -5,10 +5,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.marcos.aula1.dto.CategoryDTO;
 import com.marcos.aula1.dto.ProductDTO;
 import com.marcos.aula1.entities.Category;
 import com.marcos.aula1.entities.Product;
@@ -22,23 +21,23 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ProductService {
-    
+
 	@Autowired
 	private ProductRepository repository;
-	
+
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
 	@Transactional
-	public Page<ProductDTO> findAllPaged(PageRequest pageRequest){
-		Page<Product> list = repository.findAll(pageRequest);
+	public Page<ProductDTO> findAllPaged(Pageable pageable) {
+		Page<Product> list = repository.findAll(pageable);
 		return list.map(x -> new ProductDTO(x));
 	}
 
 	@Transactional
 	public ProductDTO findById(Long id) {
 		Optional<Product> obj = repository.findById(id);
-		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada!! ") );
+		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada!! "));
 		return new ProductDTO(entity);
 	}
 
@@ -51,7 +50,7 @@ public class ProductService {
 	}
 
 	@Transactional
-	public ProductDTO update(Long id,ProductDTO dto) {
+	public ProductDTO update(Long id, ProductDTO dto) {
 		try {
 			Product entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
@@ -62,32 +61,47 @@ public class ProductService {
 		}
 	}
 
-
 	public void delete(Long id) {
-		if(!repository.existsById(id)) {
+		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException("Recurso não encontrado");
-		} try {
+		}
+		try {
 			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new DataBaseException("Falha de integridade referencial");
 		}
-		
+
 	}
-	
+
 	private void copyDtoToEntity(ProductDTO dto, Product entity) {
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
 		entity.setPrice(dto.getPrice());
 		entity.setDate(dto.getDate());
 		entity.setImgUrl(dto.getImgUrl());
-		
+
 		entity.getCategories().clear();
-		
-		for(CategoryDTO cat : dto.getCategories()) {
+
+		for (Category cat : dto.getCategories()) {
 			Category category = categoryRepository.getOne(cat.getId());
 			entity.getCategories().add(category);
 		}
-		
-		
-	}	
+
+	}
+
+	/*
+	 * private void copyDtoToEntity(ProductDTO dto, Product entity) {
+	 * entity.setName(dto.getName()); entity.setDescription(dto.getDescription());
+	 * entity.setPrice(dto.getPrice()); entity.setDate(dto.getDate());
+	 * entity.setImgUrl(dto.getImgUrl());
+	 * 
+	 * entity.getCategories().clear();
+	 * 
+	 * for(CategoryDTO cat : dto.getCategories()) { Category category =
+	 * categoryRepository.getOne(cat.getId()); entity.getCategories().add(category);
+	 * }
+	 * 
+	 * 
+	 * }
+	 */
 }
