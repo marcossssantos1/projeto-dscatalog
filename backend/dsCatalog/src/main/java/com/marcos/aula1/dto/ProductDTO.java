@@ -1,15 +1,17 @@
 package com.marcos.aula1.dto;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.marcos.aula1.entities.Category;
 import com.marcos.aula1.entities.Product;
 
-public class ProductDTO {
-
+public class ProductDTO implements Serializable {
+	  
+	private static final long serialVersionUID = 1L;
+	
 	public Long id;
 	private String name;
 	private String description;
@@ -40,10 +42,10 @@ public class ProductDTO {
 		this.date = entity.getDate();
 	}
 
-	public ProductDTO(Product entity, Set<Category> categories) {
+	/*public ProductDTO(Product entity, List<Category> categories) {
 		this(entity);
 		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat)));
-	}
+	}*/
 
 	public Long getId() {
 		return id;
