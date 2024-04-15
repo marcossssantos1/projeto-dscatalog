@@ -1,6 +1,7 @@
 package com.marcos.aula1.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.marcos.aula1.entities.Category;
 
@@ -22,7 +23,7 @@ public class CategoryDTO implements Serializable {
 		this.id = entity.getId();
 		this.name = entity.getName();
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
