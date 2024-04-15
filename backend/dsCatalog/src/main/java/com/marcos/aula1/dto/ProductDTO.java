@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.marcos.aula1.entities.Category;
 import com.marcos.aula1.entities.Product;
@@ -42,7 +43,7 @@ public class ProductDTO implements Serializable {
 		this.date = entity.getDate();
 	}
 
-	/*public ProductDTO(Product entity, List<Category> categories) {
+	/*public ProductDTO(Product entity, Set<Category> categories) {
 		this(entity);
 		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat)));
 	}*/
